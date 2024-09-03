@@ -21,12 +21,26 @@ class image_to_text():
         kernel = np.ones((5, 5), np.uint8) # kernel for erosion
         eroded_image = cv2.erode(dilated_image, kernel, iterations=1) # applying erosion to fill gaps in text boundaries
         preprocessed_image = cv2.cvtColor(eroded_image, cv2.COLOR_GRAY2BGR) #Convert the processed image back to a 3-channel image
-        
+
         return preprocessed_image
     
+    
+    def paddle_ocr(self,preprocessed_image):
+        image = preprocessed_image.copy()
+        if len(image.shape) == 3 and image.shape[2] == 3:
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        else:
+            image_rgb = image
+        # Perform OCR
+        result = self.ocr.ocr(image_rgb, cls=True)
+
+        return result[0]
+
     
 test = image_to_text()
 image_path = "/home/mubashir/onboarding_project/test_images/test2.jpg"
 pre_processed_image = test.preprocess_image(image_path)
-plt.imshow(pre_processed_image)
-plt.show()
+result = test.paddle_ocr(pre_processed_image)
+print(result)
+# plt.imshow(pre_processed_image)
+# plt.show()
