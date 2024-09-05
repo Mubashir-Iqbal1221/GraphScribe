@@ -8,3 +8,8 @@ display:
   annotation_color: 'blue'     # Color of the text annotations
   annotation_fontsize: 6       # Font size of the text annotations
   box_color: 'red'             # Color of the bounding boxes
+  linewidth: 2
+  edgecolor: 'r'
+  facecolor: 'none'
+  annotation_offset : 10
+  figure_size: (10,10)

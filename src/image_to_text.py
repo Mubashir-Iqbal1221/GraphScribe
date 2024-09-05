@@ -7,14 +7,13 @@ import numpy as np
 from src.util import load_config 
 
 
-config = load_config()
-
 class paddle_ocr_wrapper:
     """
     Load PaddleOcr model and provide funtion "paddle_ocr" to extract text from image
     """
     def __init__(self):
-        self.ocr = PaddleOCR(use_angle_cls=config["ocr"]["use_angle_cls"], lang=config["ocr"]["lang"])
+        self.config = load_config()
+        self.ocr = PaddleOCR(use_angle_cls = self.config["ocr"]["use_angle_cls"], lang=self.config["ocr"]["lang"])
     
     def paddle_ocr(self,preprocessed_image:np.ndarray)-> list:
         """
@@ -48,7 +47,7 @@ class paddle_ocr_wrapper:
 
         return result[0]
     
-def display_anotated_image(ocr_results:list,image_path:str)-> None:
+def display_annotated_image(ocr_results:list,image_path:str)-> None:
     """
     Displays an image with bounding boxes and annotations for OCR results.
     
@@ -65,9 +64,10 @@ def display_anotated_image(ocr_results:list,image_path:str)-> None:
 
     """
     image = Image.open(image_path)
+    config = load_config()
 
     # Create a figure and axis to plot on
-    fig, ax = plt.subplots(1,figsize=(10,10))
+    fig, ax = plt.subplots(1,figsize=config["display"]["figure_size"])
     ax.imshow(image)
 
     for result in ocr_results:
@@ -84,12 +84,14 @@ def display_anotated_image(ocr_results:list,image_path:str)-> None:
         y1 = p1[1]
 
         # Create a rectangle patch and add it to the plot
-        rect = patches.Rectangle((x1, y1), width, height, linewidth=2, edgecolor='r', facecolor='none')
+        rect = patches.Rectangle((x1, y1), width, height, linewidth=config["display"]["linewidth"],
+                                 edgecolor=config["display"]["edgecolor"], facecolor=config["display"]["facecolor"])
         ax.add_patch(rect)
 
         # Annotate the word with its confidence, placing it slightly above the top-left corner of the box
         annotation = f"{word} ({score:.2f})"
-        ax.text(x1, y1 - 10, annotation, color=config["display"]["annotation_color"], fontsize=config["display"]["annotation_fontsize"])
+        ax.text(x1, y1 - config["display"]["annotation_offset"], annotation, 
+                color=config["display"]["annotation_color"], fontsize=config["display"]["annotation_fontsize"])
 
     # Hide axes
     plt.axis('off')
