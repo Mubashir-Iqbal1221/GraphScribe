@@ -1,2 +1,2 @@
-TEST_IMAGE_PATH = "/dataset/test.png"
-IMAGE_TO_ANNOTATE = "/dataset/test.png"
+TEST_IMAGE_PATH = "dataset/test2.jpeg"
+IMAGE_TO_ANNOTATE = TEST_IMAGE_PATH

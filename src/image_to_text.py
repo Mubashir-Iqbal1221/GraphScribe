@@ -65,9 +65,11 @@ def display_annotated_image(ocr_results:list,image_path:str)-> None:
     """
     image = Image.open(image_path)
     config = load_config()
+    # print(f"figsize={tuple(config['display']['figure_size'])}")
 
     # Create a figure and axis to plot on
-    fig, ax = plt.subplots(1,figsize=config["display"]["figure_size"])
+    fig, ax = plt.subplots(1,figsize=(config["display"]["figure_width"],
+                                      config["display"]["figure_height"]))
     ax.imshow(image)
 
     for result in ocr_results:

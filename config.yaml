@@ -12,4 +12,5 @@ display:
   edgecolor: 'r'
   facecolor: 'none'
   annotation_offset : 10
-  figure_size: (10,10)
+  figure_width: 10
+  figure_height: 10
