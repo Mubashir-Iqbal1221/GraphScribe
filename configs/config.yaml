@@ -1,0 +1,20 @@
+# OCR Configuration
+ocr:
+  use_angle_cls: true     # Whether to use angle classification in OCR
+  lang: 'en'              # Language for OCR (e.g., 'en' for English)
+
+# Display Configuration
+display:
+  annotation_color: 'blue'     # Color of the text annotations
+  annotation_fontsize: 6       # Font size of the text annotations
+  box_color: 'red'             # Color of the bounding boxes
+  linewidth: 2
+  edgecolor: 'r'
+  facecolor: 'none'
+  annotation_offset : 10
+  figure_width: 10
+  figure_height: 10
+
+logs:
+  rotation: "5 MB"
+  level: "DEBUG"
