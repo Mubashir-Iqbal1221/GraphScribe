@@ -2,7 +2,7 @@ from src.image_to_text import  ImageTextExtractor
 from src.constants import TEST_IMAGE_PATH
 from loguru import logger
 
-logger.add("file.log", rotation="5 MB")
+logger.add("file.log", rotation="5 MB",level="DEBUG")
 
 def main():
     image_path = TEST_IMAGE_PATH

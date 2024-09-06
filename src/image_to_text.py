@@ -21,7 +21,7 @@ class ImageTextExtractor:
         except Exception as e:
             raise RuntimeError(f"Failed to initialize PaddleOCR: {e}")
             
-    def paddle_ocr(self,preprocessed_image:np.ndarray)-> list:
+    def paddle_ocr(self, preprocessed_image:np.ndarray)-> list:
         """
         Extract text from a preprocessed image using PaddleOCR.
         
@@ -57,7 +57,7 @@ class ImageTextExtractor:
         except Exception as e:
             raise RuntimeError(f"Error during OCR processing: {e}")
     
-    def display_annotated_image(self,ocr_results:list,image_path:str)-> None:
+    def display_annotated_image(self, ocr_results:list, image_path:str)-> None:
         """
         Displays an image with bounding boxes and annotations for OCR results.
         
@@ -77,7 +77,7 @@ class ImageTextExtractor:
             image = Image.open(image_path)
 
             # Create a figure and axis to plot on
-            fig, ax = plt.subplots(1,figsize=(self.config["display"]["figure_width"],
+            fig, ax = plt.subplots(1, figsize=(self.config["display"]["figure_width"],
                                             self.config["display"]["figure_height"]))
             ax.imshow(image)
 
@@ -110,7 +110,7 @@ class ImageTextExtractor:
         except Exception as e:
             raise RuntimeError(f"Error while displaying annotated image : {e}")
         
-    def extract(self,image_path:str,display:bool)-> None:
+    def extract(self, image_path:str, display:bool)-> None:
         """ Displays image with extracted text from image
 
         Args:
