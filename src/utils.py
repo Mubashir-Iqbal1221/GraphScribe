@@ -35,7 +35,7 @@ def load_config() -> dict:
     """
     Loads the YAML configuration file and returns it as a Python dictionary.
     """
-    config_path = "/home/mubashir/onboarding_project/config.yaml"
+    config_path = "configs/config.yaml"
     
     # Check if the file exists
     if not os.path.exists(config_path):

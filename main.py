@@ -1,16 +1,16 @@
 from src.image_to_text import  ImageTextExtractor
-from src.constant import TEST_IMAGE_PATH
-import logging
+from src.constants import TEST_IMAGE_PATH
+from loguru import logger
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger.add("file.log", rotation="5 MB")
 
 def main():
     image_path = TEST_IMAGE_PATH
     ocr_tool = ImageTextExtractor()
     ocr_results = ocr_tool.extract(image_path,display=True)
     
+    
+    logger.info("OCR Results")
     for result in ocr_results:
         logger.info(result)
 

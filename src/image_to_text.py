@@ -4,8 +4,8 @@ import matplotlib.patches as patches
 from PIL import Image
 import cv2
 import numpy as np
-from src.util import load_config 
-from src.util import preprocess_image
+from src.utils import load_config 
+from src.utils import preprocess_image
 
 
 class ImageTextExtractor:
