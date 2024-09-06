@@ -20,10 +20,10 @@ def preprocess_image(image_path:str) -> np.ndarray:
             raise FileNotFoundError(f"Image not found or unable to load: {image_path}")
 
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # Convert to grayscale
-        kernel = np.ones((2, 2), np.uint8) # kernel for dilation
-        dilated_image = cv2.dilate(gray_image, kernel, iterations=1) #Appling dilation to remove noise form words
-        kernel = np.ones((5, 5), np.uint8) # kernel for erosion
-        eroded_image = cv2.erode(dilated_image, kernel, iterations=1) # applying erosion to fill gaps in text boundaries
+        dilation_kernel = np.ones((2, 2), np.uint8) # kernel for dilation
+        dilated_image = cv2.dilate(gray_image, dilation_kernel, iterations=1) #Appling dilation to remove noise form words
+        erosion_kernel = np.ones((4, 4), np.uint8) # kernel for erosion
+        eroded_image = cv2.erode(dilated_image, erosion_kernel, iterations=1) # applying erosion to fill gaps in text boundaries
         preprocessed_image = cv2.cvtColor(eroded_image, cv2.COLOR_GRAY2BGR) #Convert the processed image back to a 3-channel image
 
         return preprocessed_image
