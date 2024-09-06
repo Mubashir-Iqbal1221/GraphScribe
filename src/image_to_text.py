@@ -8,6 +8,10 @@ from paddleocr import PaddleOCR
 from src.utils import load_config 
 from src.utils import preprocess_image
 from src.constants import IMAGE_TO_TEXT_OUTPUTS_DIR
+from loguru import logger
+
+# config = load_config()
+# logger.add(LOG_FILE_PATH, rotation=config["logs"]["rotation"],level=config["logs"]["level"])
 
 
 class ImageTextExtractor:
@@ -54,6 +58,11 @@ class ImageTextExtractor:
                 image_rgb = image
             # Perform OCR
             result = self.ocr_tool.ocr(image_rgb, cls=True)
+            if result[0] is None:
+                logger.info("Image is too blurry")
+                return result[0]
+            # else:
+            #     print(result)
 
             return result[0]
         except Exception as e:
@@ -83,6 +92,7 @@ class ImageTextExtractor:
             fig, ax = plt.subplots(1, figsize=(self.config["display"]["figure_width"],
                                             self.config["display"]["figure_height"]))
             ax.imshow(image)
+            
 
             for result in ocr_results:
                 p1 = result[0][0]
@@ -139,6 +149,8 @@ class ImageTextExtractor:
         """
         preprocessed_image = preprocess_image(image_path)
         ocr_results = self.paddle_ocr(preprocessed_image)
+        if ocr_results is None:
+            return None
         if save_image:
             self.save_annotated_image(ocr_results=ocr_results, image_path=image_path)
         return ocr_results
