@@ -1,13 +1,15 @@
 from src.image_to_text import  ImageTextExtractor
-from src.constants import TEST_IMAGE_PATH
+from src.constants import TEST_IMAGE_PATH,LOG_FILE_PATH
 from loguru import logger
+from src.utils import load_config
+config = load_config()
 
-logger.add("file.log", rotation="5 MB",level="DEBUG")
+logger.add(LOG_FILE_PATH, rotation=config["logs"]["rotation"],level=config["logs"]["level"])
 
 def main():
     image_path = TEST_IMAGE_PATH
     ocr_tool = ImageTextExtractor()
-    ocr_results = ocr_tool.extract(image_path,display=True)
+    ocr_results = ocr_tool.extract(image_path,save_image=True)
     
     
     logger.info("OCR Results")

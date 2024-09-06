@@ -1,5 +1,7 @@
 #older
 dataset/
+logs/
+outputs/test
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

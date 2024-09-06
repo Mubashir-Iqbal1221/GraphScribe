@@ -1,11 +1,13 @@
-from paddleocr import PaddleOCR
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from PIL import Image
 import cv2
 import numpy as np
+import os
+from PIL import Image
+from paddleocr import PaddleOCR
 from src.utils import load_config 
 from src.utils import preprocess_image
+from src.constants import IMAGE_TO_TEXT_OUTPUTS_DIR
 
 
 class ImageTextExtractor:
@@ -56,24 +58,25 @@ class ImageTextExtractor:
             return result[0]
         except Exception as e:
             raise RuntimeError(f"Error during OCR processing: {e}")
-    
-    def display_annotated_image(self, ocr_results:list, image_path:str)-> None:
+
+    def save_annotated_image(self, ocr_results: list, image_path: str, save_directory: str = IMAGE_TO_TEXT_OUTPUTS_DIR) -> None:
         """
-        Displays an image with bounding boxes and annotations for OCR results.
-        
+        Saves an image with bounding boxes and annotations for OCR results to a specified directory.
+
         Args:
             ocr_results (list): A list of OCR results, where each result is structured as:
-                            [
-                                [[x1, y1], [x2, y2], [x3, y3], [x4, y4]],  # Bounding box coordinates
-                                (predicted_text:str, confidence_score:float)         # Text and confidence score tuple
-                            ]
+                                [
+                                    [[x1, y1], [x2, y2], [x3, y3], [x4, y4]],  # Bounding box coordinates
+                                    (predicted_text:str, confidence_score:float)         # Text and confidence score tuple
+                                ]
             image_path (str): The file path to the image on which OCR was performed.
+            save_directory (str): The directory where the annotated image will be saved. The directory will be created if it does not exist.
 
         Returns:
-            None: This function displays the annotated image and does not return any value.
-
+            None: This function saves the annotated image in the given directory.
         """
         try:
+            # Load the image
             image = Image.open(image_path)
 
             # Create a figure and axis to plot on
@@ -85,7 +88,7 @@ class ImageTextExtractor:
                 p1 = result[0][0]
                 p2 = result[0][1]
                 p3 = result[0][2]
-                p4 = result[0][3]
+                _ = result[0][3]
                 word = result[1][0]
                 score = result[1][1]
 
@@ -106,11 +109,21 @@ class ImageTextExtractor:
 
             # Hide axes
             plt.axis('off')
-            plt.show()
+
+            # Ensure the directory exists
+            os.makedirs(save_directory, exist_ok=True)
+
+            # Save the annotated image to the specified directory
+            save_path = os.path.join(save_directory, os.path.basename(image_path))
+            plt.savefig(save_path, bbox_inches='tight', pad_inches=0)
+
+            # Close the plot to avoid memory issues
+            plt.close()
+
         except Exception as e:
-            raise RuntimeError(f"Error while displaying annotated image : {e}")
-        
-    def extract(self, image_path:str, display:bool)-> None:
+            raise RuntimeError(f"Error while saving annotated image: {e}")
+            
+    def extract(self, image_path:str, save_image:bool)-> None:
         """ Displays image with extracted text from image
 
         Args:
@@ -126,8 +139,8 @@ class ImageTextExtractor:
         """
         preprocessed_image = preprocess_image(image_path)
         ocr_results = self.paddle_ocr(preprocessed_image)
-        if display:
-            self.display_annotated_image(ocr_results,image_path)
+        if save_image:
+            self.save_annotated_image(ocr_results=ocr_results, image_path=image_path)
         return ocr_results
 
 

@@ -14,3 +14,7 @@ display:
   annotation_offset : 10
   figure_width: 10
   figure_height: 10
+
+logs:
+  rotation: "5 MB"
+  level: "DEBUG"

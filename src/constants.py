@@ -1,2 +1,3 @@
 TEST_IMAGE_PATH = "dataset/test2.jpeg"
-IMAGE_TO_ANNOTATE = TEST_IMAGE_PATH
+LOG_FILE_PATH = "logs/image_to_text.log"
+IMAGE_TO_TEXT_OUTPUTS_DIR = "outputs/image_to_text"
