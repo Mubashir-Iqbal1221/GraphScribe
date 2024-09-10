@@ -45,7 +45,7 @@ def preprocess_image(image_path: str) -> np.ndarray:
     except Exception as e:
         raise RuntimeError(f"Error raised during image processing: {e}")
 
-def save_images(image_path: str, original_image: np.ndarray, preprocessed_image: np.ndarray):
+def save_images(image_path: str, original_image: np.ndarray, preprocessed_image: np.ndarray) -> None:
     """
     Saves the original and preprocessed images with appropriate names in the IMAGE_TO_TEXT_OUTPUTS_DIR.
 
