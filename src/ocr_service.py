@@ -3,11 +3,24 @@ from loguru import logger
 from src.utils import load_config
 
 from src.constants import LOG_FILE_PATH
+from typing import List, Optional
 
 config = load_config()
 logger.add(LOG_FILE_PATH, rotation=config["logs"]["rotation"],level=config["logs"]["level"])
 
-def extract_text_from_image(image_path: str):
+def extract_text_from_image(image_path: str)-> Optional[List]:
+    """
+    Extracts text from a given image using Optical Character Recognition (OCR).
+
+    Args:
+        image_path (str): The file path to the image from which to extract text.
+
+    Returns:
+        Optional[List]: A list of OCR results (if text was successfully extracted), where each 
+        result contains OCR metadata. Returns `None` if no text could be extracted (e.g., the image is too blurry).
+    
+    Logs the OCR processing steps and results.
+    """
     # Create the OCR tool instance
     ocr_tool = ImageTextExtractor()
 
@@ -21,8 +34,9 @@ def extract_text_from_image(image_path: str):
     else:
         # Log the results
         logger.info("OCR Results:")
-        results = []
+        # results = []
         for result in ocr_results:
             logger.info(result)
-            results.append(result)
-        return results
+            # results.append(result)
+        return ocr_results
+
