@@ -1,4 +1,7 @@
 from llama_cpp import Llama
+from src.utils import load_config
+
+config = load_config()
 
 class Descriptor:
     """
@@ -13,53 +16,100 @@ class Descriptor:
         Initializes the Descriptor with a language model instance.
         """
         self.__llm = Llama(
-            model_path="/home/mubashir/onboarding_project/models/llava-v1.6-mistral-7b.Q4_K_M.gguf",
+            model_path=config["llm"]["model_path"],
         )
-    
-    def generate_desc(self, retrieved_text: str) -> str:
-        """
-        Generates a description of a flowgraph from the provided OCR-extracted text.
-
-        Constructs a prompt for the language model to interpret and clean up the text,
-        making logical assumptions to fill in missing details and identifying potential inaccuracies.
-
-        Args:
-            retrieved_text (str): The text extracted from a flowchart by OCR, which may include spelling errors
-                                  and incomplete words.
-
-        Returns:
-            str: A cleaned and interpreted description of the flowgraph based on the provided text.
-
-        Notes:
-            - The method generates up to 10,000 tokens.
-        """
+    def clean(self,retrieved_text):
         prompt = """
         <|im_start|>system
-        You are a highly skilled assistant with expertise in interpreting flowgraphs, flowcharts, and technical diagrams that may be noisy or incomplete due to OCR extraction errors. The OCR process may have missed or misinterpreted some words, making the text inaccurate or incomplete. Your goal is to help the user understand and analyze the content despite these challenges.
+        You are tasked with receiving noisy text extracted via OCR that may contain spelling mistakes or garbled characters. Your task is to:
 
         Guidelines:
-        1. Critically analyze the extracted text, identifying potential gaps or inaccuracies.
-        2. Make logical assumptions to fill in missing details where appropriate.
-        3. Inform the user of possible inaccuracies if key details are missing or unclear due to the OCR quality.
-        4. If the extracted text is entirely unusable or nonsensical, respond with: "The image you provided is too blurry or unclear to interpret."
-        5. Provide a clear, structured interpretation of the extracted text, maintaining as much fidelity to the original structure as possible.
-        6. Explain each step of your interpretation in detail to ensure clarity.
-
+        1. Spelling Correction: Correct any spelling mistakes present in the extracted text.
+        2. Text Cleaning: Clean any text that is clearly distorted or doesn't make sense due to OCR errors.
+        3. Preserve Original Structure: Maintain the original structure of the text.
         <|im_start|>user
-        Describe the workflow for this text extracted from a flowchart by understanding and cleaning: {retrieved_text}
+        Here is the noisy extracted text: {retrieved_text}
         <|im_end|>
 
         <|im_start|>assistant
-        Here is an explanation of the flowgraph without quoting exact words from the text:
+        Here is the cleaned version of the extracted text with correct spellings:
         """
-
+        
         formatted_prompt = prompt.format(retrieved_text=retrieved_text)
         
         output = self.__llm(
             formatted_prompt,          # Prompt
-            max_tokens=10000,          # Generate up to 10,000 tokens
-            temperature=0.98,          # Adjust creativity of the output
-            echo=False                 # Do not echo the prompt back in the output
+            max_tokens = config["llm"]["max_tokens"],          # Generate up to 10,000 tokens
+            temperature = config["llm"]["temperature"],          # Adjust creativity of the output
+            stop=["<|im_end|>"],
+            echo = config["llm"]["echo"]                 # Do not echo the prompt back in the output
         )
         
         return output['choices'][0]["text"]
+    
+    def understand_flowgraph(self,cleaned_text:str):
+        prompt = """
+        <|im_start|>system
+        You are expert in interpreting flowgraphs from missing details.You are tasked with understanding the workflow or flowchart described by the cleaned text. Your job is to:
+
+        Guidelines:
+        1. Workflow Understanding: Understand the flow or process described in the text.
+        2. Relationship Identification: Identify and make sense of the relationships between the components or steps.
+        3. Logical Inference: Where the text is unclear or incomplete, use logical assumptions to fill in the gaps and reconstruct the workflow.
+
+        <|im_start|>user
+        Here is the cleaned text: {cleaned_text}
+        <|im_end|>
+
+        <|im_start|>assistant
+        Here is the workflow and the relationships between the steps, with any logical assumptions explained:
+        """
+        
+        formatted_prompt = prompt.format(cleaned_text=cleaned_text)
+        
+        output = self.__llm(
+            formatted_prompt,          # Prompt
+            max_tokens = config["llm"]["max_tokens"],          # Generate up to 10,000 tokens
+            temperature = config["llm"]["temperature"],          # Adjust creativity of the output
+            echo = config["llm"]["echo"]                 # Do not echo the prompt back in the output
+        )
+        
+        return output['choices'][0]["text"]
+
+        
+    def describe(self, workflow_understanding: str) -> str:
+        prompt = """
+        <|im_start|>system
+        You are tasked with providing a clear and structured explanation of the workflow based on the relationships understood in the previous step. Your job is to:
+
+        Guidelines:
+        1. Organized Explanation: Describe the workflow in a clear and organized manner.
+        2. Logical Flow: Ensure that each step or component is logically connected and explained.
+        3. Neat Presentation: Provide a concise and well-organized final description of the workflow.
+
+        <|im_start|>user
+        Here is the relationship and flow understanding from the previous step: {workflow_understanding}
+        <|im_end|>
+
+        <|im_start|>assistant
+        Here is the final organized explanation of the workflow:
+        """
+
+        formatted_prompt = prompt.format(workflow_understanding=workflow_understanding)
+        
+        output = self.__llm(
+            formatted_prompt,          # Prompt
+            max_tokens = config["llm"]["max_tokens"],          # Generate up to 10,000 tokens
+            temperature = config["llm"]["temperature"],          # Adjust creativity of the output
+            echo = config["llm"]["echo"]                 # Do not echo the prompt back in the output
+        )
+        
+        return output['choices'][0]["text"]
+    
+    def generate(self,retrieved_text:str)-> str:
+        clean_text = self.clean(retrieved_text=retrieved_text)
+        flow_text =  self.understand_flowgraph(cleaned_text=clean_text)
+        description = self.describe(flow_text)
+        
+        return description
+        
