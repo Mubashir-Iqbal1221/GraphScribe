@@ -18,7 +18,7 @@ class Descriptor:
         self.__llm = Llama(
             model_path=config["llm"]["model_path"],
         )
-    def clean(self,retrieved_text):
+    def clean(self,retrieved_text)->str:
         prompt = """
         <|im_start|>system
         You are tasked with receiving noisy text extracted via OCR that may contain spelling mistakes or garbled characters. Your task is to:
@@ -47,7 +47,7 @@ class Descriptor:
         
         return output['choices'][0]["text"]
     
-    def understand_flowgraph(self,cleaned_text:str):
+    def understand_flowgraph(self,cleaned_text:str)->str:
         prompt = """
         <|im_start|>system
         You are expert in interpreting flowgraphs from missing details.You are tasked with understanding the workflow or flowchart described by the cleaned text. Your job is to:
