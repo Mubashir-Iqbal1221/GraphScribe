@@ -27,7 +27,7 @@ class ImagePathSchema(BaseModel):
 def extract_text(image_data: ImagePathSchema):
     logger.info(f"Extracting text from image: {image_data.image_path}")
     # Call the OCR function with the provided image path
-    ocr_result = extract_text_from_image(image_data.image_path)
+    ocr_result = extract_text_from_image(image_data.image_path,config=config)
     joined_text = join_text_from_results(ocr_result)
     
     logger.info(f"Joined Extracted Text: {joined_text}")
@@ -37,7 +37,7 @@ def extract_text(image_data: ImagePathSchema):
             detail="Image is too blurry or unclear. Please provide a valid image."
         )
     
-    llm = Descriptor()
+    llm = Descriptor(config=config)
     description = llm.generate(joined_text)
     logger.info(f"Description: {description}")
     # Return the extracted text with status code 200

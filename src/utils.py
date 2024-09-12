@@ -2,9 +2,6 @@ import cv2
 import numpy as np
 import yaml
 import os
-import cv2
-import numpy as np
-import os
 from src.constants import IMAGE_TO_TEXT_OUTPUTS_DIR
 from typing import List, Optional
 

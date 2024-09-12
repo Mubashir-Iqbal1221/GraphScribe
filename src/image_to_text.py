@@ -5,7 +5,6 @@ import numpy as np
 import os
 from PIL import Image
 from paddleocr import PaddleOCR
-from src.utils import load_config 
 from src.utils import preprocess_image
 from src.constants import IMAGE_TO_TEXT_OUTPUTS_DIR
 from loguru import logger
@@ -18,9 +17,9 @@ class ImageTextExtractor:
     """
     Load PaddleOcr model and provide funtion "paddle_ocr" to extract text from image
     """
-    def __init__(self):
+    def __init__(self,config:dict):
         try:
-            self.config = load_config()
+            self.config = config
             self.ocr_tool = PaddleOCR(use_angle_cls = self.config["ocr"]["use_angle_cls"], 
                                  lang=self.config["ocr"]["lang"])
 
