@@ -20,7 +20,7 @@ def extract_text_from_image(image_path: str,config:dict)-> Optional[List]:
     ocr_tool = ImageTextExtractor(config)
 
     logger.info(f"Processing image: {image_path}")    
-    ocr_results = ocr_tool.extract(image_path, save_image=True)
+    ocr_results = ocr_tool.extract(image_path, save_image=config["save_image"])
     
     # Check if results were found
     if ocr_results is None:

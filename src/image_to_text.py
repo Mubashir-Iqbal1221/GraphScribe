@@ -18,10 +18,12 @@ class ImageTextExtractor:
     Load PaddleOcr model and provide funtion "paddle_ocr" to extract text from image
     """
     def __init__(self,config:dict):
+        """Recieve config["ocr"]
+        """
         try:
             self.config = config
-            self.ocr_tool = PaddleOCR(use_angle_cls = self.config["ocr"]["use_angle_cls"], 
-                                 lang=self.config["ocr"]["lang"])
+            self.ocr_tool = PaddleOCR(use_angle_cls = self.config["use_angle_cls"], 
+                                 lang=self.config["lang"])
 
         except Exception as e:
             raise RuntimeError(f"Failed to initialize PaddleOCR: {e}")

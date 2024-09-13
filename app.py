@@ -25,9 +25,33 @@ class ImagePathSchema(BaseModel):
 # Define the API route
 @app.post("/extract-text/", status_code=status.HTTP_200_OK)
 def extract_text(image_data: ImagePathSchema):
+    """
+    Extracts text from the image provided through the image path, processes it, 
+    and returns a generated description of the extracted text.
+
+    Args:
+        image_data (ImagePathSchema): A Pydantic schema containing the path to the image for text extraction.
+
+    Returns:
+        dict: A dictionary containing the generated description, status code, and a success message.
+
+    Raises:
+        HTTPException: If the text extraction fails due to the image being too blurry or unclear,
+                       this exception is raised with a 400 Bad Request status code and an appropriate error message.
+    
+    Workflow:
+        1. Logs the start of the text extraction process.
+        2. Calls the OCR function to extract text from the image located at `image_data.image_path`.
+        3. Joins the extracted text results.
+        4. If no text is extracted (e.g., due to image clarity), raises an HTTPException with a 400 status.
+        5. Generates a description of the extracted text using a descriptor.
+        6. Logs the generated description.
+        7. Returns the description, status code 200, and success message.
+    """
+
     logger.info(f"Extracting text from image: {image_data.image_path}")
     # Call the OCR function with the provided image path
-    ocr_result = extract_text_from_image(image_data.image_path,config=config)
+    ocr_result = extract_text_from_image(image_data.image_path,config=config["ocr"])
     joined_text = join_text_from_results(ocr_result)
     
     logger.info(f"Joined Extracted Text: {joined_text}")
@@ -37,8 +61,8 @@ def extract_text(image_data: ImagePathSchema):
             detail="Image is too blurry or unclear. Please provide a valid image."
         )
     
-    llm = Descriptor(config=config)
-    description = llm.generate(joined_text)
+    descriptor = Descriptor(config=config["descriptor"])
+    description = descriptor.generate(joined_text)
     logger.info(f"Description: {description}")
     # Return the extracted text with status code 200
     return {

@@ -15,7 +15,7 @@ class Descriptor:
         """
         self.config = config
         self.__llm = Llama(
-            model_path=self.config["llm"]["model_path"],
+            model_path=self.config["model_path"],
         )
     
     def __invoke_llm(self,prompt:str,text:str)->str:
@@ -24,10 +24,10 @@ class Descriptor:
         
         output = self.__llm(
             formatted_prompt,          # Prompt
-            max_tokens = self.config["llm"]["max_tokens"],          # Generate up to 10,000 tokens
-            temperature = self.config["llm"]["temperature"],          # Adjust creativity of the output
+            max_tokens = self.config["max_tokens"],          # Generate up to 10,000 tokens
+            temperature = self.config["temperature"],          # Adjust creativity of the output
             stop=["<|im_end|>"],
-            echo = self.config["llm"]["echo"]                 # Do not echo the prompt back in the output
+            echo = self.config["echo"]                 # Do not echo the prompt back in the output
         )
         
         return output['choices'][0]["text"]
