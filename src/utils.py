@@ -2,11 +2,8 @@ import cv2
 import numpy as np
 import yaml
 import os
-
-import cv2
-import numpy as np
-import os
 from src.constants import IMAGE_TO_TEXT_OUTPUTS_DIR
+from typing import List, Optional
 
 def preprocess_image(image_path: str) -> np.ndarray:
     """
@@ -90,3 +87,34 @@ def load_config() -> dict:
         raise yaml.YAMLError(f"Error parsing YAML configuration file: {e}")
     except Exception as e:
         raise Exception(f"Error loading configuration file: {e}")
+
+
+def join_text_from_results(ocr_results:Optional[List])-> Optional[str]:
+    """Joins extracted text from OCR results into a single string.
+
+    This function processes a list of OCR results, extracts the text found at index `[1][0]` of each 
+    result (if the structure allows), and combines the text into a single string. If the OCR results 
+    are `None` or invalid, the function will return `None`.
+
+    Args:
+        ocr_results (Optional[List]): A list of OCR results where each result is expected to be a 
+        list-like structure containing the recognized text in the `[1][0]` position.
+
+    Returns:
+        Optional[str]: A single string containing the concatenated text extracted from the results. 
+        Returns `None` if the `ocr_results` input is `None` or invalid.
+    """
+    # Check if results are valid
+    if ocr_results is None:
+        return None
+    
+    joined_text = []
+    for result in ocr_results:
+        # Ensure result has the required structure before accessing [1][0]
+        extracted_text = result[1][0]
+        joined_text.append(extracted_text)
+    
+    # Return joined text as a single string
+    return " ".join(joined_text)
+
+    
