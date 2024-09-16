@@ -2,6 +2,12 @@ import os
 import requests
 
 def download_model(url, dest_path):
+    """Downloads the model 
+
+    Args:
+        url (_type_): recieve model url of reslove category
+        dest_path (_type_): path where model will be saved
+    """
     print(f"Downloading model from {url}")
     
     # Send the GET request to download the file
