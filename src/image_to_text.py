@@ -113,10 +113,10 @@ class ImageTextExtractor:
                                         edgecolor=self.config["display"]["edgecolor"], facecolor=self.config["display"]["facecolor"])
                 ax.add_patch(rect)
 
-                # Annotate the word with its confidence, placing it slightly above the top-left corner of the box
-                annotation = f"{word} ({score:.2f})"
-                ax.text(x1, y1 - self.config["display"]["annotation_offset"], annotation, 
-                        color=self.config["display"]["annotation_color"], fontsize=self.config["display"]["annotation_fontsize"])
+                # # Annotate the word with its confidence, placing it slightly above the top-left corner of the box
+                # annotation = f"{word} ({score:.2f})"
+                # ax.text(x1, y1 - self.config["display"]["annotation_offset"], annotation, 
+                #         color=self.config["display"]["annotation_color"], fontsize=self.config["display"]["annotation_fontsize"])
 
             # Hide axes
             plt.axis('off')

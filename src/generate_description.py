@@ -19,15 +19,15 @@ class Descriptor:
             model_path=self.config["model_path"],
         )
     
-    def __invoke_llm(self,prompt:str,text:str, fast = False)->str:
+    def __invoke_llm(self,prompt:str, text:str, fast = False)->str:
         
         formatted_prompt = prompt.format(retrieved_text=text)
         if fast:
             p_optimizer = EntropyOptim(p=0.1)
             result = p_optimizer(formatted_prompt)
-            logger.info("Original results: ",text)
+            logger.info(f"Original results: {formatted_prompt}")
             formatted_prompt = result.content #replace formated prompt with the optimized prompt
-            logger.info("Optimized Prompt: ",formatted_prompt)
+            logger.info(f"Optimized Prompt: {formatted_prompt}")
         
         output = self.__llm(
             formatted_prompt,          # Prompt
@@ -118,10 +118,11 @@ class Descriptor:
                 <|im_start|>assistant
                 Here is the cleaned version of the extracted text:
         """
-        
+        result = self.__invoke_llm(prompt=prompt,text=retrieved_text,fast=True)
+        return result
         
     
-    def generate(self, retrieved_text : str, fast_generate = bool | False )-> str:
+    def generate(self, retrieved_text : str, fast_generate : bool = False )-> str:
         """
         Generates a description based on the retrieved text by cleaning it, analyzing its flow, 
         and then describing the processed flow.
@@ -132,6 +133,9 @@ class Descriptor:
         Returns:
             str: A description generated after processing the cleaned and analyzed text.
         """
+        if fast_generate:
+            return self.__fast_generate(retrieved_text=retrieved_text)
+        
         clean_text = self.__clean(retrieved_text=retrieved_text)
         flow_text =  self.__understand(retrieved_text=clean_text)
         description = self.__describe(retrieved_text=flow_text)

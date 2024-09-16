@@ -24,7 +24,7 @@ class ImagePathSchema(BaseModel):
 
 # Define the API route
 @app.post("/extract-text/", status_code=status.HTTP_200_OK)
-def extract_text(image_data: ImagePathSchema):
+def extract_text(image_data: ImagePathSchema,fast_generate:bool):
     """
     Extracts text from the image provided through the image path, processes it, 
     and returns a generated description of the extracted text.
@@ -62,7 +62,7 @@ def extract_text(image_data: ImagePathSchema):
         )
     
     descriptor = Descriptor(config=config["descriptor"])
-    description = descriptor.generate(joined_text)
+    description = descriptor.generate(joined_text,fast_generate=fast_generate)
     logger.info(f"Description: {description}")
     # Return the extracted text with status code 200
     return {
@@ -71,4 +71,9 @@ def extract_text(image_data: ImagePathSchema):
         "message": "Text extraction completed successfully."
     }
     
-    #uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+    #uvicorn app:api --host 0.0.0.0 --port 8000 --reload
+    
+# Allow the app to run with `python app.py` directly
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
