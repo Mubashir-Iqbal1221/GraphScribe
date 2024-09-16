@@ -1,0 +1,26 @@
+{
+    "builds": [
+      {
+        "src": "app.py",
+        "use": "@vercel/python"
+      },
+      {
+        "src": "demo.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/api/(.*)",
+        "dest": "app.py"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "demo.py"
+      }
+    ],
+    "buildCommand": "python3 download_models.py",
+    "installCommand": "pip install -r requirements.txt",
+    "startCommand": "streamlit run demo.py --server.port $PORT"
+  }
+  
