@@ -22,6 +22,12 @@ class ImagePathSchema(BaseModel):
             raise ValueError('Image path cannot be empty')
         return v
 
+
+# Health Check Endpoint
+@app.get("/health")
+def health_status():
+    return {"status": "healthy"}
+
 # Define the API route
 @app.post("/extract-text/", status_code=status.HTTP_200_OK)
 def extract_text(image_data: ImagePathSchema,fast_generate:bool):

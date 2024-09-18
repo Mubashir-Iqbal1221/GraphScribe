@@ -8,7 +8,6 @@ st.set_page_config(page_title="GraphScribe - OCR & Description Generator", page_
 
 # Sidebar with settings and options
 with st.sidebar:
-    st.image("https://via.placeholder.com/150?text=GraphScribe", use_column_width=True)
     st.title("GraphScribe")
     st.markdown("### Convert your images into meaningful text and descriptions with ease.")
 
@@ -19,9 +18,7 @@ with st.sidebar:
     fast_generate = st.checkbox("Fast Generate", value=False)
     show_result_image = st.checkbox("Display Detected Text", value=False)
     
-    # Some additional info or branding
     st.markdown("---")
-    st.markdown("Powered by FastAPI & Streamlit")
 
 # Main content area
 st.markdown("<h1 style='text-align: center; color: #333;'>OCR & Text Description Generator</h1>", unsafe_allow_html=True)
@@ -32,18 +29,26 @@ FASTAPI_URL = "http://localhost:8000/extract-text/"
 
 # If an image is uploaded, display it and process
 if uploaded_file:
+    # Extract the file name and extension from the uploaded file
+    file_name, file_extension = os.path.splitext(uploaded_file.name)
+
     # Display the uploaded image in a smaller size
     image = Image.open(uploaded_file)
     st.image(image, caption="Uploaded Image", width=300)  # Display the uploaded image with a smaller width
     
-    # Save uploaded file to disk or use directly
-    image_path = f"./{uploaded_file.name}"
+    # Specify directory to save the uploaded image
+    save_directory = os.path.join(os.getcwd(), "dataset")
+    
+    # Create the directory if it doesn't exist
+    if not os.path.exists(save_directory):
+        os.makedirs(save_directory)
+    
+    # Save uploaded image to the specified folder
+    image_path = os.path.join(save_directory, f"{file_name}{file_extension}")
+    
+    # Save image
     with open(image_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
-
-    # # Only ask to display resultant image when Fast Generate is checked
-    # if fast_generate:
-    #     show_image = st.checkbox("Display Processed Image", value=False)
 
     # Process button
     st.markdown("---")
@@ -63,9 +68,6 @@ if uploaded_file:
                 # Send the request to the FastAPI endpoint
                 response = requests.post(api_url, json=payload)
                 
-                # Debug: Print API response to see what it returns
-                st.write("API response: ", response.text)  # Print raw response text for debugging
-                
                 response_data = response.json()
 
                 if response.status_code == 200:
@@ -78,8 +80,8 @@ if uploaded_file:
 
                     # Automatically show the processed image after text extraction
                     if show_result_image:
-                        # Get the processed image path from the API response
-                        processed_image_path = response_data.get("processed_image_path", "outputs/test/test2.jpeg")
+                        # Construct the processed image path dynamically
+                        processed_image_path = f"outputs/test/{file_name}{file_extension}"
 
                         # Debug: Print the processed image path
                         st.write("Processed Image Path: ", processed_image_path)
@@ -88,8 +90,13 @@ if uploaded_file:
                         if os.path.exists(processed_image_path):
                             st.image(processed_image_path, caption="Processed Image", use_column_width=True)
                         else:
-                            st.warning(f"The processed image path '{processed_image_path}' does not exist. Please check the path.")
+                            current_directory = os.getcwd()
+                            # Construct the path to the outputs folder
+                            final_image_path = os.path.join(current_directory, processed_image_path)
+                            st.warning(f"The processed image path '{final_image_path}' does not exist. Please check the path.")
                 
+                elif response.status_code == 400:
+                    st.write(" Provided image is not clear, upload clean image.")
                 else:
                     st.error(f"Error: {response_data.get('detail', 'Unknown error occurred')}")
             except Exception as e:
@@ -98,4 +105,3 @@ if uploaded_file:
 # Footer for the app
 st.markdown("---")
 st.markdown("<p style='text-align: center; font-size: 12px;'>© 2024 GraphScribe. All Rights Reserved.</p>", unsafe_allow_html=True)
-

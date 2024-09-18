@@ -129,6 +129,7 @@ class Descriptor:
 
         Args:
             retrieved_text (str): The raw input text that needs to be processed.
+            fast_generate (bool): Boolean for fast generation which speedup the process in trade of performance
 
         Returns:
             str: A description generated after processing the cleaned and analyzed text.
