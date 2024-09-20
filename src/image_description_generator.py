@@ -32,7 +32,7 @@ class ImageDescriptionGenerator:
             image_url (str): The URL of the image to check.
 
         Returns:
-            dict: A dictionary with 'success' (True/False) and 'message' (a descriptive message).
+            dict: A dictionary with 'is_accessible' (True/False) and 'message' (a descriptive message).
         """
         try:
             # Send a GET request to the image URL
@@ -40,19 +40,18 @@ class ImageDescriptionGenerator:
             
             # Check the HTTP status code and return corresponding results
             if response.status_code == 200:
-                return {"success": True, "message": "Image is accessible."}
+                return {"is_accessible": True, "message": "Image is accessible."}
             elif response.status_code == 403:
-                return {"success": False, "message": "Permission denied: Access forbidden (403)."}
+                return {"is_accessible": False, "message": "Permission denied: Access forbidden (403)."}
             elif response.status_code == 404:
-                return {"success": False, "message": "Image not found (404)."}
+                return {"is_accessible": False, "message": "Image not found (404)."}
             else:
-                return {"success": False, "message": f"HTTP error {response.status_code} occurred."}
+                return {"is_accessible": False, "message": f"HTTP error {response.status_code} occurred."}
         
         except requests.exceptions.Timeout:
-            return {"success": False, "message": "Request timed out."}
+            return {"is_accessible": False, "message": "Request timed out."}
         except requests.exceptions.RequestException as e:
-            return {"success": False, "message": f"Error occurred: {str(e)}"}
-
+            return {"is_accessible": False, "message": f"Error occurred: {str(e)}"}
     def generate_image_description(self, image_url: str) -> str:
         """
         Generates a textual description of the image provided via URL.
@@ -65,7 +64,7 @@ class ImageDescriptionGenerator:
         """
         # Check if the image URL is accessible
         permission_check = self.check_image_url_permission(image_url)
-        if not permission_check['success']:
+        if not permission_check['is_accessible']:
             return permission_check['message']
 
         # Generate image description using the language model
@@ -83,3 +82,18 @@ class ImageDescriptionGenerator:
         )
         
         return response["choices"][0]["message"]["content"]
+    
+    
+link = "https://i.ibb.co/ydgWTp6/f38487bfa6dd.png"
+check = ImageDescriptionGenerator.check_image_url_permission(link)
+print(check)
+image_encoder_path = "/home/mubashir/onboarding_project/models/moondream/moondream2-mmproj-f16.gguf"
+decoder_model_path = "/home/mubashir/onboarding_project/models/moondream/moondream2-text-model-f16.gguf"
+
+
+# Initialize the model
+model = ImageDescriptionGenerator(image_encoder_path=image_encoder_path,
+                                  decoder_model_path=decoder_model_path)
+result = model.generate_image_description(image_url=link)
+
+print(result)

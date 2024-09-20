@@ -41,6 +41,7 @@ def upload_image_to_imgbb(api_key: str, image: Image) -> dict:
 
 
 
-# # Example usage:
+# # # Example usage:
 # image = Image.open('/home/mubashir/onboarding_project/dataset/test.png')
 # print(upload_image_to_imgbb(api_key,image)["data"]["url"])
+
