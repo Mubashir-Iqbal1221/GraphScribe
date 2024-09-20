@@ -31,7 +31,8 @@ def upload_image_to_imgbb(api_key: str, image: Image) -> dict:
     url = 'https://api.imgbb.com/1/upload'
     payload = {
         'key': api_key,
-        'image': encoded_image
+        'image': encoded_image,
+        'expiration':600
     }
     
     # Make the API request
