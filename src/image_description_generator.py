@@ -1,7 +1,7 @@
 import torch
 from PIL import Image
 from llama_cpp import Llama
-from llama_cpp.llama_chat_format import MiniCPMv26ChatHandler
+from llama_cpp.llama_chat_format import MoondreamChatHandler
 from loguru import logger
 import requests
 
@@ -16,7 +16,7 @@ class ImageDescriptionGenerator:
             decoder_model_path (str): Path to the LLM (language model).
         """
         # Initialize the image encoder and language model
-        self.image_encoder = MiniCPMv26ChatHandler(clip_model_path=image_encoder_path)
+        self.image_encoder = MoondreamChatHandler(clip_model_path=image_encoder_path)
         self.llm = Llama(
             model_path=decoder_model_path,
             chat_handler=self.image_encoder,

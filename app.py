@@ -31,17 +31,24 @@ def health_status():
 # Define the API route
 @app.post("/extract-text/", status_code=status.HTTP_200_OK)
 def extract_text(image_data: ImagePathSchema):
-
-    logger.info(f"Extracting text from image: {image_data.image_url}")
-    # Call the OCR function with the provided image path
-    description = model.generate_image_description(image_data.image_url)
-    
-    return {
-        "Description": description,
-        "status": status.HTTP_200_OK,
-        "message": "Text extraction completed successfully."
-    }
-    
+    check = ImageDescriptionGenerator.check_image_url_permission(image_data.image_url)
+    if check["status"]:
+        
+        logger.info(f"Extracting text from image: {image_data.image_url}")
+        # Call the OCR function with the provided image path
+        description = model.generate_image_description(image_data.image_url)
+        
+        return {
+            "Description": description,
+            "status": status.HTTP_200_OK,
+            "message": "Text extraction completed successfully."
+        }
+    else:
+       return {
+            "Description": None,  # No description if URL is not accessible
+            "status": status.HTTP_400_BAD_REQUEST,
+            "message": "Image URL is not accessible or permission denied."
+        }
     #uvicorn app:api --host 0.0.0.0 --port 8000 --reload
     
 # Allow the app to run with `python app.py` directly
