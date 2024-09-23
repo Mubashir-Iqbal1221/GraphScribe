@@ -1,5 +1,5 @@
 import os
-from src.utils import upload_image_to_imgbb
+from src.utils import upload_image_to_imgbb,load_config
 from dotenv import load_dotenv
 import streamlit as st
 import requests
@@ -9,6 +9,7 @@ from loguru import logger
 # Load environment variables
 load_dotenv()
 api_key = os.getenv("IMGBB_API_KEY")
+config = load_config()
 
 # Project branding and customization
 st.set_page_config(page_title="GraphScribe - OCR & Description Generator", page_icon="📝", layout="centered")
@@ -28,7 +29,7 @@ st.markdown("<h1 style='text-align: center; color: #333;'>OCR & Text Description
 st.markdown("<h4 style='text-align: center; color: #555;'>Upload an image and extract meaningful descriptions</h4>", unsafe_allow_html=True)
 
 # Define the FastAPI endpoint
-FASTAPI_URL = "http://localhost:8000/extract-text/"
+FASTAPI_URL = config["FASTAPI_URL"]
 
 # If an image is uploaded, display it and process
 if uploaded_file:
@@ -40,7 +41,7 @@ if uploaded_file:
     st.image(image, caption="Uploaded Image", width=300)  # Display the uploaded image with a smaller width
     
     # Upload the image to imgbb and get the URL
-    url = upload_image_to_imgbb(api_key, image)["data"]["url"]
+    url = upload_image_to_imgbb(api_key, image,config["imgbb"])["data"]["url"]
     logger.info(f"Image Link: {url}")
 
     # Show the button only after the image is uploaded and URL is obtained

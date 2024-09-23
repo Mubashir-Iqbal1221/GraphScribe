@@ -1,2 +1,18 @@
-image_encoder = "/home/mubashir/onboarding_project/models/mini_cpm/mmproj-model-f16.gguf"
-decoder_model = "/home/mubashir/onboarding_project/models/mini_cpm/ggml-model-Q4_K_M.gguf"
+imgbb:
+  IMGBB_UPLOAD_URL: "https://api.imgbb.com/1/upload"
+  IMAGE_EXPIRATION: 600 #seconds
+
+model:
+  ENCODER_MODEL_PATH: "models/moondream/moondream2-mmproj-f16.gguf"
+  DECODER_MODEL_PATH: "models/moondream/moondream2-text-model-f16.gguf"
+  CONTEXT_LENGHT: 2048
+
+logs:
+  log_file_path: "logs/graphscribe.log"
+  rotation: "1 MB"
+  retention: "10 days"
+
+
+FASTAPI_URL : "http://localhost:8000/extract-text/"
+
+

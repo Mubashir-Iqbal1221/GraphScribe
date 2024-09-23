@@ -1,38 +1,46 @@
-import torch
-from PIL import Image
+import requests
+
+# from PIL import Image
+# import torch
+# from loguru import logger
+
 from llama_cpp import Llama
 from llama_cpp.llama_chat_format import MoondreamChatHandler
-from loguru import logger
-import requests
+
 
 class ImageDescriptionGenerator:
     
-    def __init__(self, image_encoder_path: str, decoder_model_path: str):
+    def __init__(self, config : dict):
         """
-        Initializes the image encoder and language model (LLM).
+        Initializes the components necessary for generating image descriptions.
+        This includes setting up an image encoder and a language model with the specified configuration.
 
         Args:
-            image_encoder_path (str): Path to the image encoder model.
-            decoder_model_path (str): Path to the LLM (language model).
+            config (dict): Configuration dictionary with keys:
+                - 'ENCODER_MODEL_PATH': Path to the image encoder model.
+                - 'DECODER_MODEL_PATH': Path to the LLM (language model).
+                - 'CONTEXT_LENGHT': Context lenght size.
         """
         # Initialize the image encoder and language model
-        self.image_encoder = MoondreamChatHandler(clip_model_path=image_encoder_path)
+        self.image_encoder = MoondreamChatHandler(clip_model_path=config["ENCODER_MODEL_PATH"])
         self.llm = Llama(
-            model_path=decoder_model_path,
+            model_path=config["DECODER_MODEL_PATH"],
             chat_handler=self.image_encoder,
-            n_ctx=2048  # n_ctx should be increased to accommodate the image embedding
+            n_ctx=config["CONTEXT_LENGHT"]  # n_ctx should be increased to accommodate the image embedding
         )
 
     @staticmethod
     def check_image_url_permission(image_url: str) -> dict:
         """
-        Checks if the provided image URL can be accessed.
+        Verifies whether the specified image URL is accessible over the network.
 
         Args:
-            image_url (str): The URL of the image to check.
+            image_url (str): URL of the image to be checked.
 
         Returns:
-            dict: A dictionary with 'is_accessible' (True/False) and 'message' (a descriptive message).
+            dict: A dictionary containing:
+                - 'is_accessible' (bool): True if the image is accessible, False otherwise.
+                - 'message' (str): Description of the accessibility status or error message.
         """
         try:
             # Send a GET request to the image URL
@@ -52,15 +60,16 @@ class ImageDescriptionGenerator:
             return {"is_accessible": False, "message": "Request timed out."}
         except requests.exceptions.RequestException as e:
             return {"is_accessible": False, "message": f"Error occurred: {str(e)}"}
+        
     def generate_image_description(self, image_url: str) -> str:
         """
-        Generates a textual description of the image provided via URL.
+        Generates a textual description for the image located at the provided URL.
 
         Args:
-            image_url (str): The URL of the image to describe.
+            image_url (str): URL of the image to describe.
 
         Returns:
-            str: The generated description of the image.
+            str: Textual description of the image or an error message if the image cannot be accessed.
         """
         # Check if the image URL is accessible
         permission_check = self.check_image_url_permission(image_url)
@@ -70,11 +79,11 @@ class ImageDescriptionGenerator:
         # Generate image description using the language model
         response = self.llm.create_chat_completion(
             messages=[
-                {"role": "system", "content": "You are an assistant who perfectly describes images."},
+                {"role": "system", "content": "You are an assistant who perfectly describe flowgraph images."},
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": "Describe this flowgraph step by step"},
+                        {"type": "text", "text": "Describe what is this flowgraph about step by step :"},
                         {"type": "image_url", "image_url": {"url": image_url}}
                     ]
                 }
@@ -84,16 +93,3 @@ class ImageDescriptionGenerator:
         return response["choices"][0]["message"]["content"]
     
     
-link = "https://i.ibb.co/ydgWTp6/f38487bfa6dd.png"
-check = ImageDescriptionGenerator.check_image_url_permission(link)
-print(check)
-image_encoder_path = "/home/mubashir/onboarding_project/models/moondream/moondream2-mmproj-f16.gguf"
-decoder_model_path = "/home/mubashir/onboarding_project/models/moondream/moondream2-text-model-f16.gguf"
-
-
-# Initialize the model
-model = ImageDescriptionGenerator(image_encoder_path=image_encoder_path,
-                                  decoder_model_path=decoder_model_path)
-result = model.generate_image_description(image_url=link)
-
-print(result)

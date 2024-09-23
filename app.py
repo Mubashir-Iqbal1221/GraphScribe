@@ -1,13 +1,17 @@
+import requests
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, field_validator
 from src.image_description_generator import ImageDescriptionGenerator
-from src.constants import image_encoder_path, decoder_model_path
+from src.utils import load_config
 from loguru import logger
-import requests
+
+
+config = load_config()
+logger.add(config["logs"]["log_file_path"], rotation=config["logs"]["rotation"], 
+           retention=config["logs"]["retention"])
 
 # Initialize the model
-model = ImageDescriptionGenerator(image_encoder_path=image_encoder_path,
-                                  decoder_model_path=decoder_model_path)
+model = ImageDescriptionGenerator(config=config["model"])
 
 app = FastAPI()
 
@@ -66,40 +70,3 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
 
-    
-    
-"""import requests
-from io import BytesIO
-from base64 import b64encode
-from PIL import Image
-
-def upload_image_to_imgbb(pil_image: Image.Image, api_key: str):
-    # Convert the PIL image to a BytesIO object
-    buffered = BytesIO()
-    pil_image.save(buffered, format="PNG")
-    buffered.seek(0)
-
-    # Convert the image to base64
-    img_str = b64encode(buffered.getvalue()).decode('utf-8')
-
-    # Set up the request URL and payload
-    url = 'https://api.imgbb.com/1/upload'
-    data = {
-        'key': api_key,
-        'image': img_str,
-        'name': 'uploaded_image.png',
-    }
-
-    # Post the request
-    response = requests.post(url, data=data)
-
-    # Check if the upload was successful
-    if response.status_code == 200:
-        return response.json()['data']['url']
-    else:
-        return response.json()
-
-# Example usage:
-# im = Image.open('example.png')
-# print(upload_image_to_imgbb(im, 'your_imgbb_api_key'))
-"""

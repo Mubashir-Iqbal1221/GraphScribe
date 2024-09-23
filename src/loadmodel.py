@@ -1,5 +1,3 @@
-# import sys
-# import os
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from PIL import Image
 
@@ -7,6 +5,8 @@ from PIL import Image
 
 class Description():
     def __init__(self,model_path:str) -> None:
+        """This class is for original moondream model without any quantization
+        """
 
         # Load the model and tokenizer from the local directory
         self.model = AutoModelForCausalLM.from_pretrained(

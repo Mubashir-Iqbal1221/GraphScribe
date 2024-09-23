@@ -1,6 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-test.py
+testing.py
 transformers_modules
 *.py[cod]
 *$py.class
