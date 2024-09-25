@@ -1,5 +1,6 @@
 from llama_cpp import Llama
-
+from prompt_optimizer.poptim import EntropyOptim
+from loguru import logger
 
 class Descriptor:
     """
@@ -18,9 +19,15 @@ class Descriptor:
             model_path=self.config["model_path"],
         )
     
-    def __invoke_llm(self,prompt:str,text:str)->str:
+    def __invoke_llm(self,prompt:str, text:str, fast = False)->str:
         
         formatted_prompt = prompt.format(retrieved_text=text)
+        if fast:
+            p_optimizer = EntropyOptim(p=0.1)
+            result = p_optimizer(formatted_prompt)
+            logger.info(f"Original results: {formatted_prompt}")
+            formatted_prompt = result.content #replace formated prompt with the optimized prompt
+            logger.info(f"Optimized Prompt: {formatted_prompt}")
         
         output = self.__llm(
             formatted_prompt,          # Prompt
@@ -95,7 +102,27 @@ class Descriptor:
         result = self.__invoke_llm(prompt=prompt,text=retrieved_text)
         return result
     
-    def generate(self,retrieved_text:str)-> str:
+    def __fast_generate(self,retrieved_text:str)-> str:
+        prompt ="""
+        <|im_start|>system
+                You are tasked with analyzing text extracted via OCR that may contain errors and describing the workflow it represents. Your task is to:
+
+                1. Clean the text by correcting any spelling mistakes or garbled characters while preserving its original structure.
+                2. Understand the workflow described, identify relationships between steps, and use logical assumptions to fill in any gaps.
+                3. Provide a clear and organized explanation of the workflow, ensuring each step is logically connected and presented concisely.
+
+                <|im_start|>user
+                Here is the noisy extracted text: {retrieved_text}
+                <|im_end|>
+
+                <|im_start|>assistant
+                Here is the cleaned version of the extracted text:
+        """
+        result = self.__invoke_llm(prompt=prompt,text=retrieved_text,fast=True)
+        return result
+        
+    
+    def generate(self, retrieved_text : str, fast_generate : bool = False )-> str:
         """
         Generates a description based on the retrieved text by cleaning it, analyzing its flow, 
         and then describing the processed flow.
@@ -106,6 +133,9 @@ class Descriptor:
         Returns:
             str: A description generated after processing the cleaned and analyzed text.
         """
+        if fast_generate:
+            return self.__fast_generate(retrieved_text=retrieved_text)
+        
         clean_text = self.__clean(retrieved_text=retrieved_text)
         flow_text =  self.__understand(retrieved_text=clean_text)
         description = self.__describe(retrieved_text=flow_text)
