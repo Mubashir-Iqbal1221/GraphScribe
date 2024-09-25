@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+dataset/test
 src/groq_descriptor.py
 groq_descriptor.py
 mistrial_descriptor.py
