@@ -1,9 +1,10 @@
 import os
 import requests
-from io import BytesIO
-from PIL import Image
 import base64
 import yaml
+from io import BytesIO
+from PIL import Image
+
 
 
 def upload_image_to_imgbb(api_key: str, image: Image, config : dict) -> dict:

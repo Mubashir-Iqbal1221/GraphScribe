@@ -1,9 +1,9 @@
 import os
 import time
-from src.utils import upload_image_to_imgbb,load_config
-from dotenv import load_dotenv
 import streamlit as st
 import requests
+from src.utils import upload_image_to_imgbb,load_config
+from dotenv import load_dotenv
 from PIL import Image
 from loguru import logger
 
