@@ -71,7 +71,6 @@ def extract_text(image_data: ImagePathSchema,fast_generate:bool):
         "message": "Text extraction completed successfully."
     }
     
-    #uvicorn app:api --host 0.0.0.0 --port 8000 --reload
     
 # Allow the app to run with `python app.py` directly
 if __name__ == "__main__":
