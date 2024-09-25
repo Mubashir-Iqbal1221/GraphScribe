@@ -1,6 +1,9 @@
 # Byte-compiled / optimized / DLL files
-src/__pycache__/
+__pycache__/
 src/groq_descriptor.py
+groq_descriptor.py
+mistrial_descriptor.py
+temporary
 testing.py
 transformers_modules
 *.py[cod]
