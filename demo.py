@@ -1,10 +1,12 @@
 import os
+import time
 from src.utils import upload_image_to_imgbb,load_config
 from dotenv import load_dotenv
 import streamlit as st
 import requests
 from PIL import Image
 from loguru import logger
+
 
 # Load environment variables
 load_dotenv()
@@ -52,6 +54,7 @@ if uploaded_file:
         
         if process_button:
             with st.spinner("Processing... please wait"):
+                start_time = time.time()
                 # Create payload for the image path
                 payload = {
                     "image_url": url
@@ -66,6 +69,10 @@ if uploaded_file:
                         st.success("Text extraction completed successfully!")
                         st.markdown("### Generated Description")
                         st.write(response_data.get("Description", "No description available"))
+                        
+                        end_time = time.time()
+                        time_taken = end_time - start_time
+                        st.write(f"Time taken: {time_taken:.2f} seconds")
                         
                         # Remove initial image once text is processed
                         st.empty()  # Clear the space for the initial image

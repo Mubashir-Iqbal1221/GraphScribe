@@ -26,8 +26,10 @@ class ImageDescriptionGenerator:
         self.llm = Llama(
             model_path=config["DECODER_MODEL_PATH"],
             chat_handler=self.image_encoder,
-            n_ctx=config["CONTEXT_LENGHT"]  # n_ctx should be increased to accommodate the image embedding
+            n_ctx=config["CONTEXT_LENGHT"],  # n_ctx should be increased to accommodate the image embedding
+            
         )
+        self.config=config
 
     @staticmethod
     def check_image_url_permission(image_url: str) -> dict:
@@ -79,7 +81,7 @@ class ImageDescriptionGenerator:
         # Generate image description using the language model
         response = self.llm.create_chat_completion(
             messages=[
-                {"role": "system", "content": "You are an assistant who perfectly describe flowgraph images."},
+                {"role": "system", "content": "You are an assistant who perfectly describe images."},
                 {
                     "role": "user",
                     "content": [
@@ -87,7 +89,8 @@ class ImageDescriptionGenerator:
                         {"type": "image_url", "image_url": {"url": image_url}}
                     ]
                 }
-            ]
+            ],
+            temperature= self.config["TEMPERATURE"]
         )
         
         return response["choices"][0]["message"]["content"]

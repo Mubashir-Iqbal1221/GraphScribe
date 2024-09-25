@@ -6,6 +6,7 @@ model:
   ENCODER_MODEL_PATH: "models/moondream/moondream2-mmproj-f16.gguf"
   DECODER_MODEL_PATH: "models/moondream/moondream2-text-model-f16.gguf"
   CONTEXT_LENGHT: 2048
+  TEMPERATURE: 0.5
 
 logs:
   log_file_path: "logs/graphscribe.log"
