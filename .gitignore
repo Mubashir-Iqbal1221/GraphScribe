@@ -1,8 +1,18 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+dataset/test
+src/groq_descriptor.py
+groq_descriptor.py
+mistrial_descriptor.py
+temporary
+testing.py
+transformers_modules
 *.py[cod]
 *$py.class
-
+models/
+logs/
+notebooks/
+outputs/
 # C extensions
 *.so
 
