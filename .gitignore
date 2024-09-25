@@ -5,6 +5,11 @@ dataset/
 logs/
 outputs/test
 notebooks/
+src/groq_descriptor.py
+src/mistrial_descriptor.py
+temporary/
+transformers_modules/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

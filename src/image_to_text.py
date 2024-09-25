@@ -9,9 +9,6 @@ from src.utils import preprocess_image
 from src.constants import IMAGE_TO_TEXT_OUTPUTS_DIR
 from loguru import logger
 
-# config = load_config()
-# logger.add(LOG_FILE_PATH, rotation=config["logs"]["rotation"],level=config["logs"]["level"])
-
 
 class ImageTextExtractor:
     """
@@ -112,11 +109,6 @@ class ImageTextExtractor:
                 rect = patches.Rectangle((x1, y1), width, height, linewidth=self.config["display"]["linewidth"],
                                         edgecolor=self.config["display"]["edgecolor"], facecolor=self.config["display"]["facecolor"])
                 ax.add_patch(rect)
-
-                # # Annotate the word with its confidence, placing it slightly above the top-left corner of the box
-                # annotation = f"{word} ({score:.2f})"
-                # ax.text(x1, y1 - self.config["display"]["annotation_offset"], annotation, 
-                #         color=self.config["display"]["annotation_color"], fontsize=self.config["display"]["annotation_fontsize"])
 
             # Hide axes
             plt.axis('off')
