@@ -34,6 +34,16 @@ def health_status():
 # Define the API route for extracting text from the image
 @app.post("/extract-text", status_code=status.HTTP_200_OK)
 def extract_text(image_data: ImagePathSchema):
+    """
+    Extract text description from an image URL.
+
+    Parameters:
+        - image_data: A JSON object containing an image URL.
+
+    Returns:
+        - A JSON response with the description of the image or an error message
+          if the image URL is inaccessible or processing fails.
+    """
     try:
         
         check = ImageDescriptionGenerator.check_image_url_permission(image_data.image_url)

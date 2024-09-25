@@ -4,6 +4,21 @@ from PIL import Image
 
 
 class Description():
+    """
+    This module provides functionality to load and use the original Moondream model without quantization.
+    It supports loading the model and tokenizer from a local directory and generating detailed descriptions 
+    of flowgraphs based on input images.
+    
+    Classes:
+        - Description: A class that handles loading the original Moondream model and generating textual descriptions 
+                       of flowgraphs based on input images.
+    
+    Usage:
+        The Description class in this module is intended to work with the original Moondream model. 
+        It does not support quantized models or optimizations like GGUF. The model and tokenizer must be 
+        loaded from the local directory, and a PIL image is required to generate a description.
+    """
+    
     def __init__(self,model_path:str) -> None:
         """This class is for original moondream model without any quantization
         """

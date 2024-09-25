@@ -1,14 +1,29 @@
 import requests
-
-# from PIL import Image
-# import torch
-# from loguru import logger
-
 from llama_cpp import Llama
 from llama_cpp.llama_chat_format import MoondreamChatHandler
 
 
 class ImageDescriptionGenerator:
+    """
+    ImageDescriptionGenerator is responsible for generating textual descriptions of images 
+    by utilizing an image encoder and a language model. It interacts with external models and 
+    services to encode images and generate natural language descriptions.
+
+    Attributes:
+        image_encoder (MoondreamChatHandler): An instance of the image encoder used to process images.
+        llm (Llama): A large language model instance that generates image descriptions based on the encoded images.
+        config (dict): Configuration dictionary used to set up the models and other parameters.
+    
+    Methods:
+        __init__(config: dict):
+            Initializes the ImageDescriptionGenerator by loading the image encoder and language model based on the configuration.
+
+        check_image_url_permission(image_url: str) -> dict:
+            Verifies if the provided image URL is accessible over the network, returning a dictionary with the access status and message.
+
+        generate_image_description(image_url: str) -> str:
+            Takes an image URL, checks if the image is accessible, and generates a textual description using the language model.
+    """
     
     def __init__(self, config : dict):
         """
