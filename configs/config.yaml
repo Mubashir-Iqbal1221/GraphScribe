@@ -21,7 +21,7 @@ logs:
   level: "DEBUG"
 
 descriptor:
-  model_path : "models/llava-v1.6-mistral-7b.Q4_K_M.gguf" # "/home/mubashir/onboarding_project/models/llava-v1.6-mistral-7b.Q4_K_M.gguf"
+  model_path : "models/llava/llava-v1.6-mistral-7b.Q4_K_M.gguf" # "/home/mubashir/onboarding_project/models/llava-v1.6-mistral-7b.Q4_K_M.gguf"
   max_tokens: 1024          # Generate up to 10,000 tokens
   temperature: 0.8          # Adjust creativity of the output
   echo: False   
