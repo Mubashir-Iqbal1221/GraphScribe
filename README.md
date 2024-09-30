@@ -85,7 +85,7 @@ To start the backend server, run:
 python app.py
 ```
 
-The FastAPI server will run at `http://localhost:8000`. You can visit `/docs` to see the automatically generated API documentation.
+The FastAPI server will run at `http://localhost:8000`. You can visit `/docs` to see the API documentation.
 
 ### 6. Run the Streamlit GUI
 
