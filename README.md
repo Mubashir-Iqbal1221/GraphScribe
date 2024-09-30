@@ -5,17 +5,9 @@ GraphScribe is a multimodal project that transcribes handwritten flow graphs and
 ## Features
 
 - **Image Upload**: Upload images through an intuitive Streamlit-based web interface.
-- **OCR & Text Description**: Generates descriptive text from images using state-of-the-art models.
+- **Text Description**: Generates descriptive text from images using quantized multimodal.
 - **FastAPI Backend**: Processes images through a FastAPI-based backend for seamless API integration.
 - **Streamlit GUI**: A simple and easy-to-use GUI to upload and visualize results in real-time.
-
-## Prerequisites
-
-Before you begin, make sure you have the following installed:
-
-- Python 3.12 or later
-- `pip` (Python package manager)
-- Internet connection for downloading model files and API usage
 
 ## Setup Guide
 
@@ -26,8 +18,8 @@ Follow these steps to set up and run the project on your local machine:
 Open your terminal and clone the repository from GitHub (replace `<repository-url>` with your project link):
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+git clone https://github.com/Mubashir-Iqbal1221/GraphScribe.git
+cd GraphScribe
 ```
 
 ### 2. Install Dependencies
