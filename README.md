@@ -142,7 +142,7 @@ If you'd like to test a different quantized model instead of Moondream, follow t
    - Download the desired quantized model and place it in the `models/<model_name>` folder.
 
 2. **Update the Model Handler**:
-   - Open `src/image_description_generator.py` and replace the `MoondreamChatHandler` in the `ChatHandler` section with the appropriate handler for the new model. You can find a list of handlers [here](https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#multi-modal-models).
+   - Open `src/image_description_generator.py` and replace the `MoondreamChatHandler` with the appropriate handler for the new model. You can find a list of handlers [here](https://github.com/abetlen/llama-cpp-python?tab=readme-ov-file#multi-modal-models).
 
 3. **Update the Model Path**:
    - Update the model paths in the `configs/config.yaml` file to point to the newly downloaded model files.
