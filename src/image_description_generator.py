@@ -100,7 +100,7 @@ class ImageDescriptionGenerator:
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": "Describe what is this flowgraph about step by step :"},
+                        {"type": "text", "text": "Transform the following image into meaningful textual descrtipion: "}, # "Describe what is this flowgraph about step by step :"},
                         {"type": "image_url", "image_url": {"url": image_url}}
                     ]
                 }
