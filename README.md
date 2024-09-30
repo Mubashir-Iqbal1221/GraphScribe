@@ -58,7 +58,7 @@ wget https://huggingface.co/moondream/moondream2-gguf/resolve/main/moondream2-mm
 Download the quantized Moondream text decoder:
 
 ```bash
-wget https://huggingface.co/moondream/moondream2-gguf/blob/main/moondream2-text-model-f16.gguf
+wget https://huggingface.co/moondream/moondream2-gguf/resolve/main/moondream2-text-model-f16.gguf
 ```
 
 Ensure both files are saved inside the `models/moondream` folder.
