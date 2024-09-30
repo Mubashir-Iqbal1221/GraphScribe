@@ -23,8 +23,8 @@ Make sure you have the following installed before running the project:
 Clone the repository from GitHub to your local machine:
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+git clone https://github.com/Mubashir-Iqbal1221/GraphScribe/tree/development_v1.git
+cd GraphScribe
 ```
 
 ### 2. Install Dependencies
