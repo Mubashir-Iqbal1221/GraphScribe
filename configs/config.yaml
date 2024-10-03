@@ -3,8 +3,8 @@ imgbb:
   IMAGE_EXPIRATION: 600 #seconds
 
 model:
-  ENCODER_MODEL_PATH: "models/moondream/moondream2-mmproj-f16.gguf"
-  DECODER_MODEL_PATH: "models/moondream/moondream2-text-model-f16.gguf"
+  ENCODER_MODEL_PATH: "models/mini_cpm/mmproj-model-f16.gguf"
+  DECODER_MODEL_PATH: "models/mini_cpm/ggml-model-Q4_K_M.gguf"
   CONTEXT_LENGHT: 2048
   TEMPERATURE: 0.5
 
