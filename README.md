@@ -5,17 +5,9 @@ GraphScribe is a multimodal project that transcribes handwritten flow graphs and
 ## Features
 
 - **Image Upload**: Upload images through an intuitive Streamlit-based web interface.
-- **OCR & Text Description**: Generates descriptive text from images using state-of-the-art models.
+- **Text Description**: Generates descriptive text from images using quantized multimodal.
 - **FastAPI Backend**: Processes images through a FastAPI-based backend for seamless API integration.
 - **Streamlit GUI**: A simple and easy-to-use GUI to upload and visualize results in real-time.
-
-## Prerequisites
-
-Before you begin, make sure you have the following installed:
-
-- Python 3.12 or later
-- `pip` (Python package manager)
-- Internet connection for downloading model files and API usage
 
 ## Setup Guide
 
@@ -26,8 +18,8 @@ Follow these steps to set up and run the project on your local machine:
 Open your terminal and clone the repository from GitHub (replace `<repository-url>` with your project link):
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+git clone https://github.com/Mubashir-Iqbal1221/GraphScribe.git
+cd GraphScribe
 ```
 
 ### 2. Install Dependencies
@@ -66,7 +58,7 @@ wget https://huggingface.co/moondream/moondream2-gguf/resolve/main/moondream2-mm
 Download the quantized Moondream text decoder:
 
 ```bash
-wget https://huggingface.co/moondream/moondream2-gguf/blob/main/moondream2-text-model-f16.gguf
+wget https://huggingface.co/moondream/moondream2-gguf/resolve/main/moondream2-text-model-f16.gguf
 ```
 
 Ensure both files are saved inside the `models/moondream` folder.
@@ -93,7 +85,7 @@ To start the backend server, run:
 python app.py
 ```
 
-The FastAPI server will run at `http://localhost:8000`. You can visit `/docs` to see the automatically generated API documentation.
+The FastAPI server will run at `http://localhost:8000`. You can visit `/docs` to see the API documentation.
 
 ### 6. Run the Streamlit GUI
 
@@ -148,4 +140,5 @@ If you'd like to test a different quantized model instead of Moondream, follow t
    - Update the model paths in the `configs/config.yaml` file to point to the newly downloaded model files.
 
 After making these changes, the system will use the new model for generating image descriptions.
+
 ---
