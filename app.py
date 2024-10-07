@@ -1,9 +1,9 @@
-import requests
-from fastapi import FastAPI, HTTPException, status
-from pydantic import BaseModel, field_validator
-from src.image_description_generator import ImageDescriptionGenerator
+import io
+from fastapi import FastAPI, HTTPException, status, UploadFile, File
 from src.utils import load_config
+from src.moondream_describer import FlowgraphDescriber
 from loguru import logger
+from PIL import Image
 
 
 config = load_config()
@@ -13,21 +13,7 @@ logger.add(
     retention=config["logs"]["retention"],
 )
 
-# Initialize the model
-model = ImageDescriptionGenerator(config=config["model"])
-
 app = FastAPI()
-
-
-# Define the Pydantic model to validate the input
-class ImagePathSchema(BaseModel):
-    image_url: str
-
-    @field_validator("image_url")
-    def check_non_empty(cls, v):
-        if not v.strip():
-            raise ValueError("Image URL cannot be empty")
-        return v
 
 
 # Health Check Endpoint
@@ -36,60 +22,72 @@ def health_status():
     return {"status": "healthy"}
 
 
-# Define the API route for extracting text from the image
-@app.post("/extract-text", status_code=status.HTTP_200_OK)
-def extract_text(image_data: ImagePathSchema):
+# Define maximum file size (e.g., 10MB)
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+
+
+@app.post("/describe", status_code=status.HTTP_200_OK)
+async def extract_text_original(file: UploadFile = File(...)):
     """
-    Extract text description from an image URL.
+    Extract a text description from an uploaded image.
 
     Parameters:
-        - image_data: A JSON object containing an image URL.
+        - file: An image file uploaded by the user.
 
     Returns:
         - A JSON response with the description of the image or an error message
-          if the image URL is inaccessible or processing fails.
+          if the image processing fails.
     """
     try:
+        print(f"Received file: {file.filename}")
 
-        check = ImageDescriptionGenerator.check_image_url_permission(
-            image_data.image_url
-        )
-        logger.info(f"Check: {check}")
-        if check["is_accessible"]:
-            logger.info(f"Extracting text from image: {image_data.image_url}")
-
-            # Generate description using the provided image URL
-            description = model.generate_image_description(image_data.image_url)
-
-            return {
-                "Description": description,
-                "status": status.HTTP_200_OK,
-                "message": "Text extraction completed successfully.",
-            }
-        else:
-            logger.error(
-                f"Image URL permission denied or inaccessible: {image_data.image_url}"
-            )
+        # Validate content type
+        if not file.content_type.startswith("image/"):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Image URL is not accessible or permission denied.",
+                detail="Uploaded file is not an image.",
             )
 
-    except requests.exceptions.RequestException as e:
-        # Handle network-related errors
-        logger.error(
-            f"Failed to connect to the image URL: {image_data.image_url}, Error: {str(e)}"
-        )
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to connect to the image URL. {str(e)}",
-        )
+        # Read file content
+        contents = await file.read()
+
+        # Validate file size
+        if len(contents) > MAX_FILE_SIZE:
+            raise HTTPException(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                detail="File size exceeds the 10MB limit.",
+            )
+
+        # Open image
+        image = Image.open(io.BytesIO(contents)).convert("RGB")
+
+        # Generate description
+        path = config["original_model"]
+        logger.info(f"Model Path:{path}")
+        descriptor = FlowgraphDescriber(model_path=config["original_model"])
+        description = descriptor.generate(image)
+
+        logger.info(f"Description: {description}")
+        return {
+            "description": description,
+            "message": "Text extraction completed successfully.",
+        }
+
+    except HTTPException as he:
+        # Re-raise HTTP exceptions
+        logger.error(f"HTTP error: {he.detail}")
+        raise he
+
     except Exception as e:
-        # Handle any other exceptions during processing
-        logger.error(f"An error occurred during image processing: {str(e)}")
+        # Handle unexpected errors
+        error_message = (
+            "An error occurred during description generation using moondream. "
+            f"{str(e)}"
+        )
+        logger.error(error_message)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred during image processing. {str(e)}",
+            detail=error_message,
         )
 
 

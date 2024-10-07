@@ -8,12 +8,14 @@ model:
   CONTEXT_LENGHT: 2048
   TEMPERATURE: 0.5
 
+original_model: "transformers_modules/moondream"
+
 logs:
   log_file_path: "logs/graphscribe.log"
   rotation: "1 MB"
   retention: "10 days"
 
 
-FASTAPI_URL : "http://localhost:8000/extract-text/"
+FASTAPI_URL : "http://localhost:8000/describe"
 
 

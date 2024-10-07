@@ -2,7 +2,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from PIL import Image
 
 
-class Description:
+class FlowgraphDescriber:
     """
     This module provides functionality to load and use the original Moondream model without quantization.
     It supports loading the model and tokenizer from a local directory and generating detailed descriptions
@@ -23,7 +23,7 @@ class Description:
 
         # Load the model and tokenizer from the local directory
         self.model = AutoModelForCausalLM.from_pretrained(
-            model_path, trust_remote_code=True
+            model_path, trust_remote_code=True, revision="2024-08-26"
         )
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
 
@@ -41,11 +41,12 @@ class Description:
             str: A string description of the flowgraph, describing each step in detail.
         """
 
-        # prompt = "Describe the flowgraph step by step. Each step should be described."
-        prompt = """Describe the flowgraph in a detailed, step-by-step manner.
-                    For each step, explain what action is being taken, the input required, 
-                    the output generated, and how this step connects to the next. Ensure that each 
-                    explanation provides clarity on the purpose of the step and its role in the overall flow."""
+        prompt = "Describe the flowgraph in detail step by step."
+        # prompt = """Describe the flowgraph in a detailed, step-by-step manner.
+        #             For each step, explain what action is being taken, the input required,
+        #             the output generated, and how this step connects to the next. Ensure that each
+        #             explanation provides clarity on the purpose of the step and its role in the overall flow.
+        #             here is description step by step"""
         enc_image = self.model.encode_image(image)
         description = self.model.answer_question(enc_image, prompt, self.tokenizer)
         return description
