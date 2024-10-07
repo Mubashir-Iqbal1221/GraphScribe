@@ -23,7 +23,7 @@ def health_status():
 
 
 # Define maximum file size (e.g., 10MB)
-MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+MAX_FILE_SIZE = config["MAX_IMAGE_SIZE"]
 
 
 @app.post("/describe", status_code=status.HTTP_200_OK)

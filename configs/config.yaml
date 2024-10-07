@@ -17,5 +17,6 @@ logs:
 
 
 FASTAPI_URL : "http://localhost:8000/describe"
+MAX_IMAGE_SIZE: 10485760 # 10 MB
 
 
