@@ -104,4 +104,4 @@ Once the server and GUI are running, follow these steps to use the application:
 3. **Generate Description**: After uploading the image, click the "Generate Description" button. The FastAPI backend will process the image and return a description.
 4. **View Results**: The text description of the image will be displayed along with the image itself.
 
---
+---
